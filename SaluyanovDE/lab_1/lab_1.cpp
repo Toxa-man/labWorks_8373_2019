@@ -22,26 +22,23 @@ public:
 	~vector();
 private:
 	T*data;
-	T*buffer;
 	unsigned Size;
 };
 vector::vector()
 {
 	Size = 0;
-	data = NULL;
+	data = nullptr;
 }
-vector::vector(unsigned Size_)
+vector::vector(unsigned Size_):Size(Size_)
 {
-	Size = Size_;
 	data = new T[Size];
 	for (unsigned i = 0; i < Size; ++i)
 	{
 		data[i] = T();
 	}
 }
-vector::vector(unsigned Size_, const T&val)
+vector::vector(unsigned Size_, const T&val):Size(Size_)
 {
-	Size = Size_;
 	data = new T[Size];
 	for (unsigned i = 0; i < Size; ++i)
 	{
@@ -60,14 +57,13 @@ unsigned vector::size()
 }
 void vector::resize(unsigned NewSize)
 {
+	T*buffer;
 	if (NewSize > Size)
 	{
 		buffer = new T[NewSize];
 		memcpy(buffer, data, sizeof(T)*Size);
 		delete[]data;
-		data = new T[NewSize];
-		memcpy(data, buffer, sizeof(T)*NewSize);
-		delete[]buffer;
+		data = buffer;
 		for (unsigned i = Size; i < NewSize; ++i)
 		{
 			data[i] = 0;
@@ -79,28 +75,30 @@ void vector::resize(unsigned NewSize)
 		buffer = new T[Size];
 		memcpy(buffer, data, sizeof(T)*Size);
 		delete[]data;
-		data = new T[NewSize];
-		memcpy(data, buffer, sizeof(T)*NewSize);
-		delete[]buffer;
+		data = buffer;
 		Size = NewSize;
 	}
 }
 bool vector::insert(unsigned pos, const T&val)
 {
-	if (pos >= Size)
+	if (pos > Size)
 	{
 		return false;
 	}
 	else
 	{
+		resize(size() + 1);
+		for (unsigned i = size() - 1; i > pos; --i)
+		{
+			data[i] = data[i - 1];
+		}
 		data[pos] = val;
 		return true;
 	}
 }
 void vector::push_back(const T&val)
 {
-	resize(size() + 1);
-	insert(size() - 1, val);
+	insert(size(), val);
 }
 bool vector::contains(const T&val)
 {
@@ -131,11 +129,13 @@ T* vector::get_data()
 vector& vector::operator =(const vector&vec)
 {
 	if (this != &vec)
+	{
 		Size = vec.Size;
-	delete[]data;
-	data = new T[Size];
-	memcpy(data, vec.data, sizeof(T)*Size);
-	return *this;
+		delete[]data;
+		data = new T[Size];
+		memcpy(data, vec.data, sizeof(T)*Size);
+		return *this;
+	}
 }
 T& vector::operator [](unsigned val)
 {
@@ -149,7 +149,7 @@ vector::~vector()
 
 int main()
 {
-	vector vec00(0);
+	vector vec00();
 	vector vec0(4);
 	vector vec1(0);
 	std::cout << "vector 1 size is: ";
