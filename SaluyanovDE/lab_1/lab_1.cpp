@@ -6,6 +6,7 @@ using T = int;
 class vector
 {
 public:
+	vector();
 	vector(unsigned Size_);
 	vector(unsigned Size_, const T&val);
 	vector(const vector&vec);
@@ -24,6 +25,11 @@ private:
 	T*buffer;
 	unsigned Size;
 };
+vector::vector()
+{
+	Size = 0;
+	data = NULL;
+}
 vector::vector(unsigned Size_)
 {
 	Size = Size_;
@@ -143,6 +149,7 @@ vector::~vector()
 
 int main()
 {
+	vector vec00(0);
 	vector vec0(4);
 	vector vec1(0);
 	std::cout << "vector 1 size is: ";
