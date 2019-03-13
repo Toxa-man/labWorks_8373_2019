@@ -134,8 +134,8 @@ vector& vector::operator =(const vector&vec)
 		delete[]data;
 		data = new T[Size];
 		memcpy(data, vec.data, sizeof(T)*Size);
-		return *this;
 	}
+	return *this;
 }
 T& vector::operator [](unsigned val)
 {
