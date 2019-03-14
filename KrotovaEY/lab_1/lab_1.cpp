@@ -165,7 +165,7 @@ int main()
 {
 	setlocale(0, "");
 	unsigned size;
-	cout << "Ââåäèòå ðàçìåð";
+	cout << "Ã‚Ã¢Ã¥Ã¤Ã¨Ã²Ã¥ Ã°Ã Ã§Ã¬Ã¥Ã°";
 	cin >> size;
 	Vector vec1(size);
 	for (int i = 0; i < size; ++i)
@@ -182,7 +182,7 @@ int main()
 	cout << endl;
 	cout << vec1.Size()<<endl;
 	vec1 = vec2;
-	cout << "Ââåäèòå íîâûé ðàçìåð";
+	cout << "Ã‚Ã¢Ã¥Ã¤Ã¨Ã²Ã¥ Ã­Ã®Ã¢Ã»Ã© Ã°Ã Ã§Ã¬Ã¥Ã°";
 	unsigned size2;
 	cin >> size2;
 	vec1.resize(size2);
@@ -198,9 +198,10 @@ int main()
 		cout << vec2[i];
 	}
 	T a;
-	cout << "Êàêîå ÷èñëî ïðîâåðèòü";
+	cout << "ÃŠÃ ÃªÃ®Ã¥ Ã·Ã¨Ã±Ã«Ã® Ã¯Ã°Ã®Ã¢Ã¥Ã°Ã¨Ã²Ã¼";
 	cin >> a;
 	cout << vec2.contains(a) << vec2.find(a)<<endl;	
 	cout << vec2.Data();
 	_getch();
+	return 0;
 }
