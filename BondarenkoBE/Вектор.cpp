@@ -47,6 +47,7 @@ void Vector::resize(unsigned size) {
 }
 
 bool Vector::insert(unsigned pos, const T& val) {
+	if (pos > Size) return false;
 	resize(Size + 1);
 	memmove(Data + pos + 1, Data + pos, (Size - pos - 1) * sizeof(T));
 	Data[pos] = val;
