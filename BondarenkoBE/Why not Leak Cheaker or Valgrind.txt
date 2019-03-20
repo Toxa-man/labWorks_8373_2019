@@ -1,0 +1,3 @@
+Because:
+1. Leak Cheaker can`t compile code with "string" library
+2. Valgrind is not supported in Windows
