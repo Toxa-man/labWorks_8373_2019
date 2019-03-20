@@ -64,8 +64,8 @@ vec& vec::operator=(const vec obj) {
 		delete[]data;
 		data = new T[size];
 		memcpy(data, obj.data, sizeof(T)*size);
-		return *this;
 	}
+	return *this;
 }
 
 T& vec::operator[](unsigned index) {
@@ -167,6 +167,5 @@ int main()
 	std::cout << kek.contains(4) << "\n";
 	std::cout << kek.find(1337) << "\n";
 	kek.print();
-	std::cout << std::endl;
 	system("pause");
 }
