@@ -102,13 +102,14 @@ bool vec::insert(unsigned pos, const T& val) {
 	if (pos > size) {
 		return false;
 	}
-	vec::resize(++size);
+	vec::resize(size + 1);
 	unsigned i(size);
 	while (i > pos) {
 		data[i] = data[i - 1];
 		i--;
 	}
 	data[i] = val;
+	return true;
 }
 
 void vec::push_back(const T& val) {
