@@ -105,8 +105,7 @@ bool Vector::insert(unsigned pos, const T& val)
 void Vector::push_back(const T& val)
 {
 	resize(size + 1);
-	insert(size, val);
-	resize(size - 1);
+	data[size-1] = val;
 }
 
 bool Vector::contains(const T& val)
