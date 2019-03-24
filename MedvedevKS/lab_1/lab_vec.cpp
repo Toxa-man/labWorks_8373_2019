@@ -17,7 +17,7 @@ public:
 
 	vec& operator=(const vec obj);
 	T& operator[](unsigned index);
-	
+
 	unsigned gsize();
 	T* gdata();
 	void resize(unsigned size_);
@@ -102,24 +102,13 @@ bool vec::insert(unsigned pos, const T& val) {
 	if (pos > size) {
 		return false;
 	}
-	T* temp_data = new T[size];
-	memcpy(temp_data, data, sizeof(T)*size);
-	delete[]data;
-	size++;
-	data = new T[size];
-	unsigned i(0);
-	bool l(0);
-	while (i < size) {
-		if (i == pos) {
-			data[i] = val;
-			l++;
-		}
-		else {
-			data[i] = temp_data[i - l];
-		}
-		i++;
+	vec::resize(++size);
+	unsigned i(size);
+	while (i > pos) {
+		data[i] = data[i - 1];
+		i--;
 	}
-	delete[]temp_data;
+	data[i] = val;
 }
 
 void vec::push_back(const T& val) {
@@ -157,15 +146,18 @@ void foo(vec kek) {
 
 int main()
 {
-	vec kek(5), kek1;
-	kek = kek;
-	kek[4] = 3;
-	kek.resize(10);
-	kek.resize(2);
-	kek.insert(2, 1337);
-	kek.push_back(1008);
-	std::cout << kek.contains(4) << "\n";
-	std::cout << kek.find(1337) << "\n";
+	vec kek(2);
+	kek.print();
+	kek.insert(0, 1000);
+	kek.print();
+	kek.insert(1, 1001);
+	kek.print();
+	kek.insert(kek.gsize(), 1000 + kek.gsize());
+	kek.print();
+	kek.insert(1000, 444);
+	kek.print();
+	kek.insert(5, 1337);
+	std::cout << "size: " << kek.gsize() << " arr: ";
 	kek.print();
 	system("pause");
 }
