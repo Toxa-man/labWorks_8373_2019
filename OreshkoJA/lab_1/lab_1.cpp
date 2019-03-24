@@ -86,9 +86,8 @@ void Vector::push_back(const T& val)
 bool Vector::contains(const T& val)
 {
 	bool prov = false;
-	for (int i = 0; i < Size; ++i)
+	for (int i = 0; mass[i-1]!=val; ++i)
 	{
-		if (mass[i] == val)
 			prov = true;
 	}
 	return prov;
@@ -119,8 +118,8 @@ Vector&Vector::operator =(const Vector&vec)
 		delete[]mass;
 		mass = new int[Size];
 		memcpy(mass, vec.mass, sizeof(int)*Size);
-		return*this;
 	}
+	return*this;
 }
 Vector::Vector(const Vector&vec)
 {
@@ -170,7 +169,7 @@ int main()
 	for (int i = 0; i < Size; ++i)
 		cout << vect[i];
 
-	cout <<"Vector contains number(0-no,1-yes):"<< vect.contains(val)<<endl;
+	cout<<endl <<"Vector contains number(0-no,1-yes):"<< vect.contains(val)<<endl;
 	cout << "Vector contains 9 and its index(-1-no number):" << vect.find(9) << endl;
 	cout << "Pointer to internal buffer:" << vect.data()<<endl;
 	system("pause");
