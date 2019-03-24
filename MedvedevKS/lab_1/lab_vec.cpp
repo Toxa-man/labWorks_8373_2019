@@ -81,11 +81,14 @@ T* vec::gdata() {
 }
 
 void vec::resize(unsigned size_) {
+	if (size == size_) {
+		return;
+	}
 	T* temp_data = new T[size];
 	memcpy(temp_data, data, sizeof(T)*size);
 	delete[]data;
 	data = new T[size_];
-	if (size_ <= size) {
+	if (size_ < size) {
 		memcpy(data, temp_data, sizeof(T)*size_);
 	}
 	else {
