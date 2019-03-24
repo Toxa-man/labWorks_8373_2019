@@ -10,6 +10,7 @@ public:
     Vector(unsigned sizeIn);
     ~Vector();
     Vector(unsigned size, const T &val);
+    Vector(const Vector &vec);
     unsigned Size();
     void resize(unsigned sizeIn);
     bool insert(unsigned pos, const T &val);
@@ -42,6 +43,11 @@ Vector::Vector(unsigned sizeIn, const T &val) {
     for (unsigned i = 0; i < size; i++) {
         data[i] = val;
     }
+}
+Vector::Vector(const Vector &vec) {
+    size = vec.size;
+    data = new T[size];
+    memcpy(data, vec.data, sizeof(T) * size);
 }
 unsigned Vector::Size() {
     return size;
