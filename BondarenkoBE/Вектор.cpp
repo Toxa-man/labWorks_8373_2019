@@ -22,7 +22,7 @@ class Vector{
 		unsigned Size = 0;
 };
 
-Vector::Vector(unsigned size = 1, const T& val = 0) {
+Vector::Vector(unsigned size = 1, const T& val = T()) {
 	Data = new T[size];
 	Size = size;
 	for (unsigned i = 0; i < Size; ++i)
@@ -38,7 +38,7 @@ void Vector::resize(unsigned size) {
 	if (size > Size) {
 		memcpy(Buf_Data, Data, Size * sizeof(T));
 		for (unsigned i = Size; i < size; ++i)
-			Buf_Data[i] = 0;
+			Buf_Data[i] = T();
 	}
 	else memcpy(Buf_Data, Data, size * sizeof(T));
 	delete []Data;
@@ -51,10 +51,7 @@ bool Vector::insert(unsigned pos, const T& val) {
 	resize(Size + 1);
 	memmove(Data + pos + 1, Data + pos, (Size - pos - 1) * sizeof(T));
 	Data[pos] = val;
-	if (Data[pos] == val)
-		return true; 
-	else
-		return false;
+	return true; 
 }
 
 void Vector::push_back(const T& val) {
@@ -84,7 +81,6 @@ T* Vector::data() {
 
 Vector::Vector(const Vector&vec) {
 	Size = vec.Size;
-	delete []Data;
 	Data = new T[Size];
 	memcpy(Data, vec.Data, sizeof(T)*Size);
 }
