@@ -1,5 +1,5 @@
 #include<iostream>
-#include <conio.h>
+#include <memory.h>
 using T = int;
 
 using namespace std;
@@ -9,17 +9,17 @@ class Vector {
 	unsigned Size;
 
 public:
-		Vector();						//дефолтный конструктор
-		Vector(unsigned size);			//создаёт массив размером size и заполняет его дефолтными значениями, т.е. T()
-		Vector(unsigned size, const T& val);	//создаёт массив размером size и заполняет его значением val
-		unsigned size();				//возвращает размер массива
-		void resize(unsigned size);		//приравнивает размера массива к size; если новый размер больше старого - новые элементы заполнить нулями
-		bool insert(unsigned pos, const T& val);	//вставляет val в позицию pos; возвращает true | false в зависимости от успеха операции
-		void push_back(const T& val);	//добавляет val в конец массива
-		bool contains(const T& val);	//возвращает true если val присуствует в массиве и false в противном случае
-		T& operator[](unsigned index);	// обращение к элементу с индексом index. При этом должно быть возможно как читать значение, так и изменять его
-		int find(const T& val);			//возвращает индекс первого вхождения val в массив или -1 в случае его отсутствия
-		T* return_data();				//возвращает указатель на внутренний буфер
+		Vector();						//РґРµС„РѕР»С‚РЅС‹Р№ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+		Vector(unsigned size_);			//СЃРѕР·РґР°С‘С‚ РјР°СЃСЃРёРІ СЂР°Р·РјРµСЂРѕРј size Рё Р·Р°РїРѕР»РЅСЏРµС‚ РµРіРѕ РґРµС„РѕР»С‚РЅС‹РјРё Р·РЅР°С‡РµРЅРёСЏРјРё, С‚.Рµ. T()
+		Vector(unsigned size_, const T& val);	//СЃРѕР·РґР°С‘С‚ РјР°СЃСЃРёРІ СЂР°Р·РјРµСЂРѕРј size Рё Р·Р°РїРѕР»РЅСЏРµС‚ РµРіРѕ Р·РЅР°С‡РµРЅРёРµРј val
+		unsigned size();				//РІРѕР·РІСЂР°С‰Р°РµС‚ СЂР°Р·РјРµСЂ РјР°СЃСЃРёРІР°
+		void resize(unsigned size_);		//РїСЂРёСЂР°РІРЅРёРІР°РµС‚ СЂР°Р·РјРµСЂР° РјР°СЃСЃРёРІР° Рє size; РµСЃР»Рё РЅРѕРІС‹Р№ СЂР°Р·РјРµСЂ Р±РѕР»СЊС€Рµ СЃС‚Р°СЂРѕРіРѕ - РЅРѕРІС‹Рµ СЌР»РµРјРµРЅС‚С‹ Р·Р°РїРѕР»РЅРёС‚СЊ РЅСѓР»СЏРјРё
+		bool insert(unsigned pos, const T& val);	//РІСЃС‚Р°РІР»СЏРµС‚ val РІ РїРѕР·РёС†РёСЋ pos; РІРѕР·РІСЂР°С‰Р°РµС‚ true | false РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СѓСЃРїРµС…Р° РѕРїРµСЂР°С†РёРё
+		void push_back(const T& val);	//РґРѕР±Р°РІР»СЏРµС‚ val РІ РєРѕРЅРµС† РјР°СЃСЃРёРІР°
+		bool contains(const T& val);	//РІРѕР·РІСЂР°С‰Р°РµС‚ true РµСЃР»Рё val РїСЂРёСЃСѓСЃС‚РІСѓРµС‚ РІ РјР°СЃСЃРёРІРµ Рё false РІ РїСЂРѕС‚РёРІРЅРѕРј СЃР»СѓС‡Р°Рµ
+		T& operator[](unsigned index);	// РѕР±СЂР°С‰РµРЅРёРµ Рє СЌР»РµРјРµРЅС‚Сѓ СЃ РёРЅРґРµРєСЃРѕРј index. РџСЂРё СЌС‚РѕРј РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ РІРѕР·РјРѕР¶РЅРѕ РєР°Рє С‡РёС‚Р°С‚СЊ Р·РЅР°С‡РµРЅРёРµ, С‚Р°Рє Рё РёР·РјРµРЅСЏС‚СЊ РµРіРѕ
+		int find(const T& val);			//РІРѕР·РІСЂР°С‰Р°РµС‚ РёРЅРґРµРєСЃ РїРµСЂРІРѕРіРѕ РІС…РѕР¶РґРµРЅРёСЏ val РІ РјР°СЃСЃРёРІ РёР»Рё -1 РІ СЃР»СѓС‡Р°Рµ РµРіРѕ РѕС‚СЃСѓС‚СЃС‚РІРёСЏ
+		T* return_data();				//РІРѕР·РІСЂР°С‰Р°РµС‚ СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РІРЅСѓС‚СЂРµРЅРЅРёР№ Р±СѓС„РµСЂ
 		Vector(const Vector&vec);		//copy-constructor
 		Vector& operator=(const Vector&vec);	//assigment operator
 		~Vector();						//destructor
@@ -30,18 +30,18 @@ Vector::Vector() {
 	data = nullptr;
 }
 
-Vector::Vector(unsigned size) {
-	Size = size;
-	data = new T[size];
+Vector::Vector(unsigned size_) {
+	Size = size_;
+	data = new T[size_];
 	for (unsigned i = 0; i < Size; i++) {
 		data[i] = T();
 	}
 }
 
-Vector::Vector(unsigned size, const T& val) {
-	Size = size;
-	data = new T[size];
-	for (unsigned i = 0; i < size; i++) {
+Vector::Vector(unsigned size_, const T& val) {
+	Size = size_;
+	data = new T[Size];
+	for (unsigned i = 0; i < Size; i++) {
 		data[i] = val;
 	}
 }
@@ -169,6 +169,5 @@ int main() {
 	for (unsigned i = 0; i < vector1.size(); i++) {
 		cout << vector1[i] << ' ';
 	}
-	_getch();
-	return 0;
+	system("pause");
 }
