@@ -57,7 +57,7 @@ class Vector{
     		data=new T[s];
 			if(s>vsize){
         		memcpy(data, cpy_arr, sizeof(T)*vsize);
-        		memset(data+vsize, 0, (s-vsize)*sizeof(T));
+        		memset(data+vsize, T(), (s-vsize)*sizeof(T));
     		}else if(s<vsize){
             	memcpy(data, cpy_arr, sizeof(T)*s);
     		}
