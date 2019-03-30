@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory.h>
+#include <conio.h>
 
 using namespace std;
 
@@ -37,15 +38,22 @@ public:
 	
 	Vector &operator =(const Vector &second)
 	{
-		this->size = second.size;
-		delete[] this->arr;
-		this->arr = new T[second.size];
-		memcpy(this->arr, second.arr, second.size * sizeof(T));
+		if (this != &second)
+		{
+			size = second.size;
+			delete[] arr;
+			arr = new T[second.size];
+			memmove(arr, second.arr, second.size * sizeof(T));
+		}
+
 		return *this;
+		
 	}
 
 	~Vector();
 };
+
+
 
 template<typename T>
 Vector<T>::Vector()
@@ -56,9 +64,9 @@ Vector<T>::Vector()
 template<typename T>
 Vector<T>::Vector(const Vector &other)
 {
-	this->size = other.size;
-	this->arr = new T[other.size];
-	memcpy(this->arr, other.arr, size * sizeof(T));
+	size = other.size;
+	arr = new T[other.size];
+	memmove(arr, other.arr, size * sizeof(T));
 }
 
 template<typename T>
@@ -66,7 +74,7 @@ Vector<T>::Vector(unsigned size)
 {
 	this->size = size;
 	arr = new T[size];
-	memset(arr, 0, size * sizeof(T));
+	memset(arr, T(), size * sizeof(T));
 }
 
 template<typename T>
@@ -89,18 +97,16 @@ void Vector<T>::resize(unsigned size)
 {
 	T* buf = new T[size];
 	if (this->size > size)
-		memcpy(buf, arr, size * sizeof(T));
+		memmove(buf, arr, size * sizeof(T));
 	else
 	{
-		memcpy(buf, arr, this->size * sizeof(T));
-		memset(&buf[this->size], 0, (size - this->size) * sizeof(T));
+		memmove(buf, arr, this->size * sizeof(T));
+		memset(&buf[this->size], T(), (size - this->size) * sizeof(T));
 	}
 
 	delete[] arr;
-	arr = new T[size];
+	arr = buf;
 	this->size = size;
-	memcpy(arr, buf, size * sizeof(T));
-	delete[] buf;
 }
 
 template<typename T>
@@ -108,20 +114,12 @@ bool Vector<T>::insert(unsigned int pos, const T& val)
 {
 	if ((pos >= 0) && (pos <= size))
 	{
-		T* buf = new T[size + 1];
-		memcpy(buf, arr, (pos - 1) * sizeof(T));
-		buf[pos - 1] = val;
-		for (unsigned i = pos; i < size + 1; i++)
+		resize(size + 1);
+		for (unsigned i = pos+1; i < size; i++)
 		{
-			buf[i] = arr[i - 1];
+			arr[i] = arr[i - 1];
 		}
-		delete[] arr;
-		arr = new T[size + 1];
-		size += 1;
-		memcpy(arr, buf, size * sizeof(T));
-
-
-		delete[] buf;
+		arr[pos] = val;
 		return true;
 	}
 	else
@@ -133,14 +131,8 @@ bool Vector<T>::insert(unsigned int pos, const T& val)
 template<typename T>
 void Vector<T>::push_back(const T& val)
 {
-	T* buf = new T[size + 1];
-	memcpy(buf, arr, size * sizeof(T));
-	buf[size] = val;
-	delete[] arr;
-	size += 1;
-	arr = new T[size];
-	memcpy(arr, buf, size * sizeof(T));
-	delete[] buf;
+	resize(size + 1);
+	arr[size - 1] = val;
 }
 
 template<typename T>
@@ -224,7 +216,7 @@ int main()
 	Vector<double> d(4, 6);
 	cout << "Created vector D on 4 value filled with 6: ";
 	for (unsigned i = 0; i < d.Size(); i++)
-		cout << d[i] << " ";
+		cout << d[i] << " "; 
 
 	cout << "\n\n";
 
@@ -246,4 +238,6 @@ int main()
 	cout << "\n\n";
 
 	cout << "Check data function: " << b.data() << endl;
+
+	_getch();
 }
