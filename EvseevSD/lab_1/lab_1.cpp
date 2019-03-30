@@ -124,9 +124,9 @@ Vector& Vector::operator =(const Vector&vec) {
 		Size = vec.Size;
 		delete[]data;
 		data = new T[Size];
-		memcpy(data, vec.data, sizeof(T)*Size);
-		return *this;
+		memcpy(data, vec.data, sizeof(T)*Size);	
 	}
+	return *this;
 }
 
 Vector::~Vector() {
