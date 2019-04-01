@@ -15,42 +15,72 @@ class Vector{
 			}
 			return out;
 		}
-		
-		
-		
 	public:
-		Vector(){
+		Vector();		
+		Vector(unsigned s);		
+		Vector(unsigned s, const T& val);		
+		Vector(const Vector& vec);		
+		int size();		
+		void resize(unsigned s);		
+		bool insert(unsigned pos, T val);		
+		void push_back(T val);		
+		bool contains(const T& val);		
+		int find(const T& val);		
+		T* Data();		
+		Vector& operator =(const Vector &vec){
+			if(this != &vec){
+				vsize=vec.vsize;
+				delete[] data;
+				data=new T[vsize];
+				memcpy(data, vec.data, sizeof(T)*vsize);
+			}
+			return *this;
+		}	
+		T& operator [](unsigned n){
+			return data[n];
+		}	
+		~Vector();
+		
+};
+
+template<typename T>
+Vector<T>::Vector(){
 			vsize=0;
 			data=NULL;
 		}
-		
-		Vector(unsigned s){
+
+template<typename T>
+Vector<T>::Vector(unsigned s){
 			vsize=s;
 			data=new T[s];
 			for(int i=0; i<s; i++){
 				data[i]=(T)i;
 			}
 		}
-		
-		Vector(unsigned s, const T& val){
+
+template<typename T>
+Vector<T>::Vector(unsigned s, const T& val){
 			vsize=s;
 			data=new T[s];
 			for(int i=0; i<s; i++){
 				data[i]=(T)val;
 			}
 		}
-		
-		Vector(const Vector& vec){
-			this->vsize=vec.size;
-			this->data=new T[size];
-			memcpy(this->data, vec.data, vsize*sizeof(T));
+
+template<typename T>
+Vector<T>::Vector(const Vector& vec){
+			vsize=vec.size;
+			data=new T[size];
+			memcpy(data, vec.data, vsize*sizeof(T));
 		}
-		
-		int size(){
+
+template<typename T>
+int Vector<T>::size(){
 			return vsize;
 		}
-		
-		void resize(unsigned s){
+
+template<typename T>
+void Vector<T>::resize(unsigned s){
 			T* cpy_arr=new T[s];
     		memcpy(cpy_arr, data, sizeof(T)*vsize);
     		delete []data;
@@ -64,8 +94,9 @@ class Vector{
     		vsize=s;
     		delete []cpy_arr;
 		}
-		
-		bool insert(unsigned pos, T val){
+
+template<typename T>
+bool Vector<T>::insert(unsigned pos, T val){
 			if(pos>=vsize || pos<0){
 				return false;
 			}else{
@@ -77,13 +108,15 @@ class Vector{
 				return true;
 			}
 		}
-		
-		void push_back(T val){
+
+template<typename T>
+void Vector<T>::push_back(T val){
 			resize(vsize+1);
 			data[vsize-1]=val;
 		}
-		
-		bool contains(const T& val){
+
+template<typename T>
+bool Vector<T>::contains(const T& val){
 			for(int i=0; i<vsize; i++){
 				if(val==data[i]){
 					return true;
@@ -91,8 +124,9 @@ class Vector{
 			}
 			return false;
 		}
-		
-		int find(const T& val){
+
+template<typename T>
+int Vector<T>::find(const T& val){
 			for(int i=0; i<vsize; i++){
 				if(data[i]==val){
 					return i;
@@ -100,29 +134,17 @@ class Vector{
 			}
 			return -1;	
 		}
-		
-		T* Data(){
+
+template<typename T>
+T* Vector<T>::Data(){
 			return data;
 		}
-		
-		Vector& operator =(const Vector &vec){
-			vsize=vec.vsize;
-			delete[] data;
-			data=new T[vsize];
-			memcpy(data, vec.data, sizeof(T)*vsize);
-			return *this;
-		}
-		
-		T& operator [](unsigned n){
-			return data[n];
-		}
-		
-		~Vector(){
+
+template<typename T>
+Vector<T>::~Vector(){
 			vsize=0;
 			delete []data;
 		}
-		
-};
 
 
 int main(){
