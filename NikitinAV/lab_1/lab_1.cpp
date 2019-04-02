@@ -6,10 +6,10 @@ using T = int;
 class Vector {
 public:
 	Vector();
-	Vector(unsigned size);
-	Vector(unsigned size, const T& val);
+	Vector(unsigned sizearg);
+	Vector(unsigned sizearg, const T& val);
 	Vector(const Vector&vector);
-	unsigned size11();
+	unsigned vectorsize();
 	void resize(unsigned customsize);
 	bool insert(unsigned pos, const T& val);
 	void push_back(const T& val);
@@ -27,21 +27,21 @@ Vector::Vector() {
 	size = 0;
 	data = nullptr;
 }
-Vector::Vector(unsigned size) {
-this->size = size;
+Vector::Vector(unsigned sizearg) {
+size = sizearg;
 data = new T [size];
 for (unsigned i = 0; i < size; i++){
 	data[i] = i;
 }
 }
-Vector::Vector(unsigned size, const T& val) {
-	this->size = size;
+Vector::Vector(unsigned sizearg, const T& val) {
+	size = sizearg;
 	 data = new T [size];
 	for (unsigned i = 0; i < size; i++) {
 		data[i] = val;
 	}
 }
-unsigned Vector::size11() {
+unsigned Vector::vectorsize() {
 	return size;
 }
 void Vector::resize(unsigned customsize) {
@@ -106,8 +106,8 @@ T& Vector::operator[](unsigned index) {
 	return data[index];
 }
 Vector::Vector(const Vector&vector){
-	this->size = vector.size;
-	this->data = new T[vector.size];
+	size = vector.size;
+	data = new T[vector.size];
 	memcpy(data, vector.data, sizeof(T)*size);
 	}
 Vector&Vector::operator=(const Vector&vector) {
@@ -123,43 +123,43 @@ int main() {
 	Vector vector1(5);
 	Vector vector2(7, 9);
 	cout << "Vector num 1\n";
-	for (unsigned i = 0; i < vector1.size11(); i++) {
+	for (unsigned i = 0; i < vector1.vectorsize(); i++) {
 		cout << vector1[i] << " ";
 	}
 	cout << "\nVector num 2\n";
-	for (unsigned i = 0; i < vector2.size11(); i++) {
+	for (unsigned i = 0; i < vector2.vectorsize(); i++) {
 		cout << vector2[i] << " ";
 	}
-	cout << "\nVector num 1s size is " << vector1.size11();
-	cout << endl << "Vector num 2s size is " << vector2.size11() << endl;
+	cout << "\nVector num 1s size is " << vector1.vectorsize();
+	cout << endl << "Vector num 2s size is " << vector2.vectorsize() << endl;
 	vector1.resize(6);
 	cout << "Vector num 1 after resize(6)\n";
-	for ( unsigned i = 0; i < vector1.size11(); i++) {
+	for ( unsigned i = 0; i < vector1.vectorsize(); i++) {
 		cout << vector1[i] << " ";
 	}
 	vector2.resize(5);
 	cout << "\nVector num 2 after resize(5)\n";
-	for (unsigned i = 0; i < vector2.size11(); i++) {
+	for (unsigned i = 0; i < vector2.vectorsize(); i++) {
 		cout << vector2[i] << " ";
 	}
 	vector1.insert(5, 3);
 	cout << "\nVector num 1 after insert(5,3)\n";
-	for (unsigned i = 0; i < vector1.size11(); i++) {
+	for (unsigned i = 0; i < vector1.vectorsize(); i++) {
 		cout << vector1[i] << " ";
 	}
 	vector2.insert(4, 2);
 	cout << "\nVector num 2 after insert(4,2)\n";
-	for (unsigned i = 0; i < vector2.size11(); i++) {
+	for (unsigned i = 0; i < vector2.vectorsize(); i++) {
 		cout << vector2[i] << " ";
 	}
 	vector1.push_back(7);
 	cout << "\nVector num 1 after push_back(7)\n";
-	for (unsigned i = 0; i < vector1.size11(); i++) {
+	for (unsigned i = 0; i < vector1.vectorsize(); i++) {
 		cout << vector1[i] << " ";
 	}
 	vector2.push_back(4);
 	cout << "\nVector num 2 after push_back(4)\n";
-	for (unsigned i = 0; i < vector2.size11(); i++) {
+	for (unsigned i = 0; i < vector2.vectorsize(); i++) {
 		cout << vector2[i] << " ";
 	}
 	cout << "\nVector num 1 contains(8) check\n" << vector1.contains(8);
