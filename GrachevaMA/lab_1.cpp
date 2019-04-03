@@ -114,7 +114,7 @@ public:
 	{
 		if (index >= razmer)
 		{
-			cout << "Array index out of bound, exiting";
+			cout << "Индекс превышает размер вектора";
 			exit(0);
 		}
 		return buffer[index];
