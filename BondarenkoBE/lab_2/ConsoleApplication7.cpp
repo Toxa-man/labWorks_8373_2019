@@ -64,12 +64,17 @@ int name_validate(char* name, bool &IDAT_existing) {
 	return 4;
 }
 
-int main()
+int main(int argc, char* argv[])
 {
 	Chunk chunk;
 	std::string path;
-	std::cout << "Write path to test file: ";
-	std::cin >> path;
+	if (argc == 1) {
+		path = "test.png";
+		std::cout << "Write path to test file: ";
+		std::cin >> path;
+	}
+	else 
+		path = argv[1];
 	std::ifstream png_file(path, std::ios::binary);
 	//Signature checking
 	chunk.information = new char[sizeof(png_signature)];
