@@ -4,22 +4,22 @@
 #include <algorithm>
 #include <string>
 
-const unsigned __int64 png_signature = 0x89504E470D0A1A0A;
+const uint64_t png_signature = 0x89504E470D0A1A0A;
 const unsigned short chunk_name_size = 4;
 const unsigned short chunk_size_size = 4;
 const unsigned short chunk_CRC_32_size = 4;
-const unsigned __int32 chunk_names[19] = {	*(__int32 *)"IHDR", *(__int32 *)"IEND", *(__int32 *)"IDAT", *(__int32 *)"PLTE",
-											*(__int32 *)"bKGD", *(__int32 *)"cHRM", *(__int32 *)"gAMA", *(__int32 *)"hlST", 
-											*(__int32 *)"iCCP", *(__int32 *)"iTXt", *(__int32 *)"pHYs", *(__int32 *)"sBIT", 
-											*(__int32 *)"sPLT", *(__int32 *)"sRGB", *(__int32 *)"sTER", *(__int32 *)"tEXt", 
-											*(__int32 *)"tIME", *(__int32 *)"tRNS", *(__int32 *)"zTXt"};
+const uint32_t chunk_names[19] = {	*(uint32_t *)"IHDR", *(uint32_t *)"IEND", *(uint32_t *)"IDAT", *(uint32_t *)"PLTE",
+									*(uint32_t *)"bKGD", *(uint32_t *)"cHRM", *(uint32_t *)"gAMA", *(uint32_t *)"hlST",
+									*(uint32_t *)"iCCP", *(uint32_t *)"iTXt", *(uint32_t *)"pHYs", *(uint32_t *)"sBIT",
+									*(uint32_t *)"sPLT", *(uint32_t *)"sRGB", *(uint32_t *)"sTER", *(uint32_t *)"tEXt",
+									*(uint32_t *)"tIME", *(uint32_t *)"tRNS", *(uint32_t *)"zTXt"};
 
 struct Chunk
 {
-	unsigned __int32 size = 0;
+	uint32_t size = 0;
 	char name[4] = { 0, 0, 0, 0 };
 	char* information;
-	unsigned __int32 CRC_32;
+	uint32_t CRC_32;
 };
 
 void read_chunk(std::ifstream &file, Chunk &chunk) {
@@ -34,11 +34,11 @@ void read_chunk(std::ifstream &file, Chunk &chunk) {
 }
 
 int name_validate(char* name, bool &IDAT_existing) {
-	if (*(__int32 *)name == chunk_names[0]) {
+	if (*(uint32_t *)name == chunk_names[0]) {
 		std::cout << "Double IHDR fail!\n";
 		return 3;
 	}
-	if (*(__int32 *)name == chunk_names[1]) {
+	if (*(uint32_t *)name == chunk_names[1]) {
 		std::cout << "IEND was found!\n";
 		if (IDAT_existing) {
 			std::cout << "File parsed successfully!\n";
@@ -49,13 +49,13 @@ int name_validate(char* name, bool &IDAT_existing) {
 			return 5;
 		}		
 	}
-	if (*(__int32 *)name == chunk_names[2]) {
+	if (*(uint32_t *)name == chunk_names[2]) {
 		std::cout << name[0] << name[1] << name[2] << name[3] << " chunk found at ";
 		IDAT_existing = true;
 		return 0;
 	}
 	for (int i = 3; i < 19; ++i) {
-		if (*(__int32 *)name == chunk_names[i]) {
+		if (*(uint32_t *)name == chunk_names[i]) {
 			std::cout << name[0] << name[1] << name[2] << name[3] << " chunk found at ";
 			return 0;
 		}
@@ -76,7 +76,7 @@ int main()
 	memset(chunk.information, 0, sizeof(png_signature));
 	png_file.read(chunk.information, sizeof(png_signature));
 	std::reverse(chunk.information, chunk.information + sizeof(png_signature));
-	if (*((unsigned __int64 *)chunk.information) != png_signature) {
+	if (*((uint64_t *)chunk.information) != png_signature) {
 		std::cout << "Signature checking fail! Wrong signature\n";
 		delete[] chunk.information;
 		return 1;
@@ -85,7 +85,7 @@ int main()
 		std::cout << "Signature checking done! Right PNG signature\n";
 	//IHDR checking
 	read_chunk(png_file, chunk);
-	if (*(__int32 *)chunk.name != *(__int32 *)"IHDR") {
+	if (*(uint32_t *)chunk.name != *(uint32_t *)"IHDR") {
 		std::cout << "IHDR finding fail!\n";
 		delete[] chunk.information;
 		return 2;
@@ -94,14 +94,13 @@ int main()
 		std::cout << "IHDR was found!\n";
 	//Other chunks
 	int error_status = 0;
-	unsigned __int32 previous_poz = png_file.tellg();
+	uint32_t previous_poz = png_file.tellg();
 	bool IDAT_existing = false;
 	while (true) {
 		read_chunk(png_file, chunk);
 		if (!(error_status = name_validate(chunk.name, IDAT_existing))) {
 			std::cout << std::dec << previous_poz << "; Length: " << chunk.size << "; CRC: " << std::hex << "0x" << chunk.CRC_32 << "\n";
 			previous_poz = png_file.tellg();
-			continue;
 		}
 		else {
 			delete[] chunk.information;
