@@ -66,50 +66,64 @@ int name_validate(char* name, bool &IDAT_existing) {
 
 int main(int argc, char* argv[])
 {
-	Chunk chunk;
 	std::string path;
 	if (argc == 1) {
 		path = "test.png";
 		std::cout << "Write path to test file: ";
 		std::cin >> path;
 	}
-	else 
-		path = argv[1];
-	std::ifstream png_file(path, std::ios::binary);
-	//Signature checking
-	chunk.information = new char[sizeof(png_signature)];
-	memset(chunk.information, 0, sizeof(png_signature));
-	png_file.read(chunk.information, sizeof(png_signature));
-	std::reverse(chunk.information, chunk.information + sizeof(png_signature));
-	if (*((uint64_t *)chunk.information) != png_signature) {
-		std::cout << "Signature checking fail! Wrong signature\n";
-		delete[] chunk.information;
-		return 1;
+	int iterations = 1;
+		while ((iterations == 1) || (iterations < argc)){
+			std::cout << "__________________________________________________________________\n";
+			if (argc > 1)
+			path = argv[iterations];
+			iterations++;
+			Chunk chunk;
+			std::ifstream png_file(path, std::ios::binary);
+			if (!png_file.is_open()) {
+				std::cout << "Wrong path!\n";
+				png_file.close();
+				continue;
+			}
+			//Signature checking
+			chunk.information = new char[sizeof(png_signature)];
+			memset(chunk.information, 0, sizeof(png_signature));
+			png_file.read(chunk.information, sizeof(png_signature));
+			std::reverse(chunk.information, chunk.information + sizeof(png_signature));
+			if (*((uint64_t *)chunk.information) != png_signature) {
+				std::cout << "Signature checking fail! Wrong signature\n";
+				delete[] chunk.information;
+				png_file.close();
+				continue;
+			}
+			else
+				std::cout << "Signature checking done! Right PNG signature\n";
+			//IHDR checking
+			read_chunk(png_file, chunk);
+			if (*(uint32_t *)chunk.name != *(uint32_t *)"IHDR") {
+				std::cout << "IHDR finding fail!\n";
+				delete[] chunk.information;
+				png_file.close();
+				continue;
+			}
+			else
+				std::cout << "IHDR was found!\n";
+			//Other chunks
+			int error_status = 0;
+			uint32_t previous_poz = png_file.tellg();
+			bool IDAT_existing = false;
+			while (true) {
+				read_chunk(png_file, chunk);
+				if (!(error_status = name_validate(chunk.name, IDAT_existing))) {
+					std::cout << std::dec << previous_poz << "; Length: " << chunk.size << "; CRC: " << std::hex << "0x" << chunk.CRC_32 << "\n";
+					previous_poz = png_file.tellg();
+				}
+				else {
+					delete[] chunk.information;
+					png_file.close();
+					break;
+				}
+			}
 	}
-	else
-		std::cout << "Signature checking done! Right PNG signature\n";
-	//IHDR checking
-	read_chunk(png_file, chunk);
-	if (*(uint32_t *)chunk.name != *(uint32_t *)"IHDR") {
-		std::cout << "IHDR finding fail!\n";
-		delete[] chunk.information;
-		return 2;
-	}
-	else
-		std::cout << "IHDR was found!\n";
-	//Other chunks
-	int error_status = 0;
-	uint32_t previous_poz = png_file.tellg();
-	bool IDAT_existing = false;
-	while (true) {
-		read_chunk(png_file, chunk);
-		if (!(error_status = name_validate(chunk.name, IDAT_existing))) {
-			std::cout << std::dec << previous_poz << "; Length: " << chunk.size << "; CRC: " << std::hex << "0x" << chunk.CRC_32 << "\n";
-			previous_poz = png_file.tellg();
-		}
-		else {
-			delete[] chunk.information;
-			return error_status;
-		}
-	}
+	return 0;
 }
