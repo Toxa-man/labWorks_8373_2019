@@ -1,0 +1,1 @@
+I had used specific for VS types, so Leak Cheaker tells errors. But I fix all errors with memory, what Dr. Memory said me. 
