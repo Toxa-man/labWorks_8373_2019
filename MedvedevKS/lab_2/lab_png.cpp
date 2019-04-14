@@ -36,7 +36,7 @@ issue signature_check(ifstream& in) {
 issue IHDR_check(ifstream& in) {
 	const unsigned	IHDR_name = 0x49484452,
 					IHDR_length = 13/*bytes*/,
-					chunkSectionSize = 4;
+					chunkSectionSize = 4/*bytes*/;
 	unsigned recivedName, recivedLength;
 	in.read((char*)&recivedLength, chunkSectionSize);
 	reverse((char*)& recivedLength, (char*)& recivedLength + chunkSectionSize - 1);
@@ -57,7 +57,7 @@ issue otherChuncks_check(ifstream& in, bool& IDAT_founded) {
 	const unsigned	IDAT_name = 0x49444154,
 					IEND_name = 0x49454E44,
 					IEND_length = 0,
-					chunkSectionSize = 4;
+					chunkSectionSize = 4/*bytes*/;
 	unsigned recivedLength, recivedName = 0, recivedCRC;
 	unsigned long long pos, fileSize;
 	pos = in.tellg();
