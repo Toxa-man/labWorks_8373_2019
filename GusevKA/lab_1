@@ -1,0 +1,209 @@
+#include "pch.h"
+#include <iostream>
+#include <memory.h>
+
+using A = int;//именование типа данных
+
+
+
+class vector
+{
+public:
+	vector();
+	vector(unsigned Size_);
+	vector(unsigned Size_, const A&val);
+	vector(const vector&vec);
+	unsigned size();
+	void resize(const unsigned &NewSize);
+	bool insert(unsigned pos, const A&val);
+	void push_back(const A&val);
+	bool contains(const A&val);
+	int finder(const A&val);
+	A* datareturner();
+	vector& operator =(const vector&vec);
+	A& operator [](unsigned val);
+	~vector();
+private:
+	A*data;
+	unsigned Size;
+};
+vector::vector()
+{
+	Size = 0;
+	data = nullptr;
+}
+vector::vector(unsigned Size_)
+{
+	data = new A[Size_];
+	for (unsigned i = 0; i < Size_; ++i)
+	{
+		data[i] = A();
+	}
+}
+vector::vector(unsigned Size_, const A &val)//
+{
+	data = new A[Size_];
+	Size = Size_;
+	for (unsigned i = 0; i < Size_; ++i)
+	{
+		data[i] = val;
+		
+	}
+}
+vector::vector(const vector&vec)
+{
+	Size = vec.Size;
+	data = new A[Size];
+	memcpy(data, vec.data, sizeof(A)*Size);
+}
+unsigned vector::size()
+{
+	return Size;
+}
+void vector::resize(const unsigned &NewSize)
+{
+	A*buffer;
+	if (NewSize > Size)
+	{
+		buffer = new A[NewSize];
+		memcpy(buffer, data, sizeof(A)*Size);
+		delete[]data;
+		data = buffer;
+		for (unsigned i = Size; i < NewSize; ++i)
+		{
+			data[i] = A();
+		}
+		Size = NewSize;
+	}
+	else
+	{
+		buffer = new A[NewSize];
+		memcpy(buffer, data, sizeof(A)*NewSize);
+		delete[]data;
+		data = buffer;
+		Size = NewSize;
+	}
+}
+bool vector::insert(unsigned pos, const A&val)
+{
+	if (pos > Size)
+	{
+		return false;
+	}
+	else
+	{
+		resize(size()+ 1);
+		for (unsigned i = size() - 1; i > pos; --i)
+		{
+			data[i] = data[i - 1];
+		}
+		data[pos] = val;
+		return true;
+	}
+}
+void vector::push_back(const A&val)
+{
+	insert(size(), val);
+}
+bool vector::contains(const A&val)
+{
+	for (unsigned i = 0; i < Size; ++i)
+	{
+		if (val == data[i])
+		{
+			return true;
+		}
+	}
+	return false;
+}
+int vector::finder(const A&val)
+{
+	for (unsigned i = 0; i < Size; ++i)
+	{
+		if (val == data[i])
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+A* vector::datareturner()//указатель тк возвращаем указатель на массив
+{
+	return data;
+}
+vector& vector::operator =(const vector&vec)//перегрузка оператора = , 
+{// ссылка для того чтобы была возмоность многоступенчатого присваивания , ссылка для L value 
+	if (this != &vec)
+	{
+		Size = vec.Size;
+		delete[]data;
+		data = new A[Size];
+		memcpy(data, vec.data, sizeof(A)*Size);
+	}
+	return *this;// this указатель на текущий  объект класса (то что слева от оператора =)
+}
+A& vector::operator [](unsigned val)//перегрузкаа [] оператор работает как , позволяет работать с значением на позиции val на прямую , потому сдесь и ссылка
+{
+	return data[val];
+}
+vector::~vector()
+{
+	Size = 0;
+	delete[]data;
+}
+int main()
+{
+	vector vec00();//
+	vector vec0(5);
+	vector vec1(1);
+	std::cout << "Size of first vector ";
+	std::cout << vec1.size() << "\n";
+	vec1.resize(10);
+	std::cout << "Size of first vector after resize ";
+	std::cout <<vec1.size()<< "\n";
+	vector vec2(10, 5);
+	std::cout << "vector 2 values (vector vec2(10, 5))  "<< "\n";
+	unsigned int i;
+	for ( i = 0; i < vec2.size(); ++i)
+	{
+		std::cout << i << " value ";
+		std::cout << vec2[i] << "\n";
+	}
+
+	vec2[5] = 5;
+	std::cout << "vector 2 value after assignment ";
+	std::cout << vec2[5] << "\n";
+	vec2.resize(12);
+	std::cout << "vector 2 values after resize if old size < new size " << "\n ";
+
+	for (unsigned i = 0; i < vec2.size(); ++i)
+	{
+		std::cout << i << " value: ";
+		std::cout << vec2[i] << "\n";
+	}
+	vec2.resize(2);
+	std::cout << "vector 2 values after resize if old size >= new size " << "\n ";
+
+	for ( unsigned i = 0; i < vec2.size(); ++i)
+	{
+		std::cout << i << " value: ";
+		std::cout << vec2[i] <<"\n";
+	}
+	std::cout << "check for insert 10 in pos 1 and 2 in pos 14 ";
+	std::cout << vec2.insert(1, 10) << ", " << vec2.insert(2, 14) << "\n";
+	std::cout << "check for insert (written out value in pos 3): ";
+	std::cout << vec2[3] << "\n";
+	std::cout << "check for push_back(10) function  ";
+	vec2.push_back(10);
+	std::cout << vec2[vec2.size() - 1] << "\n";
+	std::cout << "check for contains 10 and 1000 function  ";
+	std::cout << vec2.contains(10) << "\n";
+	std::cout << vec2.contains(1000) << "\n";
+	std::cout << "find 10  and 1000 function  ";
+	std::cout << vec2.finder(10) <<  "\n";
+	std::cout << vec2.finder(1000) << "\n";
+	std::cout << "check for data return function: ";
+	std::cout << vec2.datareturner() ;
+
+	return 0;
+}
