@@ -8,7 +8,7 @@ int IDAT = (int)'IDAT';
 int IEND = (int)'IEND';
 int perevod_v_int(char(bytes[4]))
 {
-	unsigned char uch[4];
+	unsigned char uch[4] = { 0,0,0,0 };
 	for (int i = 0; i < 4; i++)
 		uch[i] = bytes[i];
 	unsigned int count = 0;
@@ -33,7 +33,7 @@ bool signature_chek(ifstream&png, char bytes[8])
 }
 bool IHDR_chek(ifstream&png, char bytes[4],int& size)
 {
-	int IHDR_chek;
+	int IHDR_chek=0;
 	png.read(bytes, 4);
 	size = perevod_v_int(bytes);
 	png.read(bytes, 4);
@@ -45,20 +45,19 @@ bool IHDR_chek(ifstream&png, char bytes[4],int& size)
 }
 void IDATandIEND_chek(ifstream&png, char bytes[4], int& size)
 {
-	unsigned char CRC[4];
+	unsigned char CRC[4] = { 0,0,0,0 };
 	int index = 0;
-	int place;
+	int place=0;
 	unsigned int IDAT_chek = 0;
 	png.seekg(size + 4, ios::cur);
     size = 0;
 	bool iend = 0;
 	int error = 0;
-	unsigned int CRC2;
 	{
 			while (!png.eof() && iend == 0)
 			{
 				place = png.tellg();
-				png.read(bytes, 4);
+	     		png.read(bytes, 4);
 				size = perevod_v_int(bytes);
 				png.read(bytes, 4);
 				IDAT_chek = perevod_v_int(bytes);
@@ -103,10 +102,10 @@ void IDATandIEND_chek(ifstream&png, char bytes[4], int& size)
 }
 int main()
 {
-	char bytes[8];
+	char bytes[8] = { 0,0,0,0,0,0,0,0 };
 	bool error = 0;
 	cout << "Input path: ";
-	string path;
+	string path="text";
 	cin >> path;
     int size = 0;
 	ifstream png("no_IDAT.png", ios::binary);
