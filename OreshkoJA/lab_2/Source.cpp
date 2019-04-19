@@ -8,7 +8,6 @@ int IDAT = (int)'IDAT';
 int IEND = (int)'IEND';
 int perevod_v_int(char(bytes[4]))
 {
-	unsigned char uch[4] = {};
 	unsigned int count = 0;
 	for (int i = 0; i < 4; i++)
 	{
