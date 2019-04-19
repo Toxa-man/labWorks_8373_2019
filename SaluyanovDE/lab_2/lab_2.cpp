@@ -4,7 +4,6 @@
 #include <conio.h>
 #include <string>
 #include "fstream"
-
 const int T_Size = 7, esc_code = 27,
 Signature_Length = 8, IEND_Length = 8,
 Chunk_Length_Length = 4,
@@ -15,7 +14,7 @@ IHDR_Name[Chunk_Name_Length] = { 'I', 'H', 'D', 'R' },
 IDAT_Name[Chunk_Name_Length] = { 'I', 'D', 'A', 'T' },
 IEND_Name[Chunk_Name_Length] = { 'I', 'E', 'N', 'D' },
 IEND_Chunk[IEND_Length] = { 'I', 'E', 'N', 'D', 174, 66, 96, 130 };
-enum class Chunk_Type{UNKNOWN, IDAT, IEND };
+enum class Chunk_Type { UNKNOWN, IDAT, IEND };
 struct png_file
 {
 	std::string Name_Of_File;
@@ -49,14 +48,14 @@ void Check_Signature(png_file &file)
 	file.stream.read(buf, Signature_Length);
 	for (int i = 0; i < Signature_Length; ++i)
 	{
-		if (buf[i] != Standard_Signature[i])
+		if (buf[i] != (char)Standard_Signature[i])
 		{
 			i = Signature_Length;
 			file.Signature_Founded = false;
 		}
 	}
 	file.pos += Signature_Length;
-	delete []buf;
+	delete[]buf;
 }
 
 void Set_Start_Of_Chunk(png_file &file)
@@ -115,8 +114,8 @@ void Check_IHDR(png_file &file)
 	file.pos += Chunk_Name_Length;
 	file.pos += file.Cur_Chunk_Len;
 	Get_CRC(file);
-	file.stream.seekg(file.pos , std::ios_base::beg);
-	delete []buf;
+	file.stream.seekg(file.pos, std::ios_base::beg);
+	delete[]buf;
 }
 Chunk_Type Get_Chunk_Type(png_file &file)
 {
@@ -147,7 +146,7 @@ Chunk_Type Get_Chunk_Type(png_file &file)
 		}
 	}
 	file.pos += Chunk_Name_Length;
-	delete []buf;
+	delete[]buf;
 	return result;
 }
 void Show_IDAT_Status_And_Chunk_Info(png_file& file)
@@ -237,21 +236,22 @@ void Test_Begin(png_file &file)
 int main()
 {
 	char k = 0;
+
 	while (k != esc_code)
 	{
-		Sleep(Half_Second_Delay);
+	Sleep(Half_Second_Delay);
 
-		png_file file;
-		std::cout << "enter file name with .png postfix" << std::endl;
-		std::getline(std::cin, file.Name_Of_File);
-		//file.Name_Of_File = "normal_file.png";
-		//file.Name_Of_File = "wrong_signature.png";
-		//file.Name_Of_File = "no_IDAT.png";
-		//file.Name_Of_File = "wrong_IHDR.png";
-		//file.Name_Of_File = "wrong_IEND.png";
-		Test_Begin(file);
-		std::cout << "Press any botton to test another file (press esc for quit)" << std::endl;
-		k = _getch();
+	png_file file;
+	std::cout << "enter file name with .png postfix" << std::endl;
+	std::getline(std::cin, file.Name_Of_File);
+	//file.Name_Of_File = "normal_file.png";
+	//file.Name_Of_File = "wrong_signature.png";
+	//file.Name_Of_File = "no_IDAT.png";
+	//file.Name_Of_File = "wrong_IHDR.png";
+	//file.Name_Of_File = "wrong_IEND.png";
+	Test_Begin(file);
+	std::cout << "Press any botton to test another file (press esc for quit)" << std::endl;
+	k = _getch();
 	}
 	return 0;
 }
