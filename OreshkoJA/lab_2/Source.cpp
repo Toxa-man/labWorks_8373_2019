@@ -8,13 +8,11 @@ int IDAT = (int)'IDAT';
 int IEND = (int)'IEND';
 int perevod_v_int(char(bytes[4]))
 {
-	unsigned char uch[4] = { 0,0,0,0 };
-	for (int i = 0; i < 4; i++)
-		uch[i] = bytes[i];
+	unsigned char uch[4] = {};
 	unsigned int count = 0;
 	for (int i = 0; i < 4; i++)
 	{
-		count |= uch[i];
+		count |= (unsigned char)bytes[i];
 		if (i != 3)
 			count <<= 8;
 	}
@@ -27,9 +25,9 @@ bool signature_chek(ifstream&png, char bytes[8])
 	for (int i = 0; i < 8; i++) 
 	{
 		if (bytes[i] != (char)signature[i])
-			return 0;
+			return false;
 	}
-	return 1;
+	return true;
 }
 bool IHDR_chek(ifstream&png, char bytes[4],int& size)
 {
@@ -39,13 +37,12 @@ bool IHDR_chek(ifstream&png, char bytes[4],int& size)
 	png.read(bytes, 4);
 	IHDR_chek = perevod_v_int(bytes);
 	if (IHDR_chek!= IHDR)
-		return 0;
-	
-	return 1;
+		return false;
+	return true;
 }
 void IDATandIEND_chek(ifstream&png, char bytes[4], int& size)
 {
-	unsigned char CRC[4] = { 0,0,0,0 };
+	unsigned char CRC[4] = {};
 	int index = 0;
 	int place=0;
 	unsigned int IDAT_chek = 0;
@@ -53,7 +50,6 @@ void IDATandIEND_chek(ifstream&png, char bytes[4], int& size)
     size = 0;
 	bool iend = 0;
 	int error = 0;
-	{
 			while (!png.eof() && iend == 0)
 			{
 				place = png.tellg();
@@ -94,7 +90,6 @@ void IDATandIEND_chek(ifstream&png, char bytes[4], int& size)
 				cout << "IEND was found" << endl;
 			if (error == 1 && index == 0)
 				cout << "Wrong IDAT" << endl;
-		}
 		if (iend == 0)
 		{
 			cout << "IEND was not found";
@@ -102,13 +97,13 @@ void IDATandIEND_chek(ifstream&png, char bytes[4], int& size)
 }
 int main()
 {
-	char bytes[8] = { 0,0,0,0,0,0,0,0 };
+	char bytes[8] = {};
 	bool error = 0;
 	cout << "Input path: ";
 	string path="text";
 	cin >> path;
     int size = 0;
-	ifstream png("no_IDAT.png", ios::binary);
+	ifstream png(path, ios::binary);
 	if (signature_chek(png, bytes))
 		cout << "Signature is GOOD" << endl;
 	else
