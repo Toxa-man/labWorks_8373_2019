@@ -239,19 +239,18 @@ int main()
 
 	while (k != esc_code)
 	{
-	Sleep(Half_Second_Delay);
-
-	png_file file;
-	std::cout << "enter file name with .png postfix" << std::endl;
-	std::getline(std::cin, file.Name_Of_File);
-	//file.Name_Of_File = "normal_file.png";
-	//file.Name_Of_File = "wrong_signature.png";
-	//file.Name_Of_File = "no_IDAT.png";
-	//file.Name_Of_File = "wrong_IHDR.png";
-	//file.Name_Of_File = "wrong_IEND.png";
-	Test_Begin(file);
-	std::cout << "Press any botton to test another file (press esc for quit)" << std::endl;
-	k = _getch();
+		Sleep(Half_Second_Delay);
+		png_file file;
+		std::cout << "enter file name with .png postfix" << std::endl;
+		std::getline(std::cin, file.Name_Of_File);
+		//file.Name_Of_File = "normal_file.png";
+		//file.Name_Of_File = "wrong_signature.png";
+		//file.Name_Of_File = "no_IDAT.png";
+		//file.Name_Of_File = "wrong_IHDR.png";
+		//file.Name_Of_File = "wrong_IEND.png";
+		Test_Begin(file);
+		std::cout << "Press any botton to test another file (press esc for quit)" << std::endl;
+		k = _getch();
 	}
 	return 0;
 }
