@@ -77,7 +77,7 @@ void idatIendTest(ifstream &file, ofstream &out) {
 }
 
 int main() {
-    ifstream file("wrong_IEND.png", ios::binary);
+    ifstream file("normal.png", ios::binary);
     ofstream out("out.txt", ios::binary);
 
     size_t size(0);
