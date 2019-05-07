@@ -63,7 +63,6 @@ bool ot_chunks(ifstream& img, bool& idat_is) {
 		if (name == idat_name) {
 			idat_is = true;
 			cout << "IDAT chunk is " << dec << pos - 2 * chunk_size << endl;
-			cout << "His length: " << len << "," << endl;
 			img.seekg(pos + len);
 			img.read((char*)& our_crc, chunk_size);
 			reverse((char*)& our_crc, (char*)& our_crc + chunk_size - 1);
