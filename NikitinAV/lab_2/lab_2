@@ -1,0 +1,167 @@
+#include <iostream>
+#include <conio.h>
+#include <string>
+#include <fstream>
+using namespace std;
+class pngmethods {
+public:
+	pngmethods(string path);
+	~pngmethods();
+	void pngSignature();
+	void pngIDATnIEND();
+	void pngIHDR();
+	void pngCRC();
+	unsigned pngData_amount(char*arr);
+	void setup();
+	ifstream png;
+	static const int sign_size = 8;
+	static const int IHDR_size = 4;
+	static const int IDAT_size = 4;
+	static const int CRC_size = 4;
+	static const int IEND_size = 4;
+	const char standartsignature[sign_size] = { char(137), 'P', 'N', 'G', char(13), char(10), char(26), char(10) };
+	const char standartIHDR[IHDR_size] = { 'I','H','D','R' };
+	const char standartIDAT[IDAT_size] = { 'I','D','A','T' };
+	const char standartIEND[IEND_size] = { 'I','E','N','D' };
+	bool signature_t_or_f = false;
+	bool z;
+	bool signcheck = true;
+	bool iendcheck = false;
+	bool idatcheck = false;
+	bool ihdrcheck = false;
+};
+
+pngmethods::pngmethods(string path) {
+	png.open(path, ios::binary);
+	if (png.is_open()){
+		cout << "File has been opened";
+	}
+	else {
+		cout << "No such file";
+
+	}
+
+}
+pngmethods::~pngmethods() {
+	png.close();
+}
+void pngmethods::pngSignature() {
+	char filesignature[sign_size];
+	png.read((char*)&filesignature, sign_size);
+	bool signature_t_or_f = true;
+	for (int i = 0; i < sign_size; i++) {
+		if (standartsignature[i] != filesignature[i]) {
+			signature_t_or_f = false;
+		}
+	}
+	if (signature_t_or_f) {
+		cout << "\nSignature is OK\n";
+	}
+	else {
+		cout << "\nSignature is wrong or wrong path to file\n";
+		signcheck = false;
+	}
+}
+
+void pngmethods::pngIDATnIEND() {
+	char IDAT[IDAT_size];
+	int beg_of_chunk = png.tellg();
+	png.read((char*)&IDAT, 4);
+	int chunk_data_size = pngData_amount(IDAT);
+	png.read((char*)&IDAT, 4);
+	bool IDAT_check = true;
+	bool IEND_check = true;
+	z = false;
+	for (int i = 0; i < 4; i++) {
+		if (IDAT[i] != standartIDAT[i]) {
+			IDAT_check = false;
+		}
+		if (IDAT[i] != standartIEND[i]) {
+			IEND_check = false;
+		}
+	}
+	if (IDAT_check) {
+		cout << "chunk was found at " <<dec <<beg_of_chunk;
+		z = true;
+		idatcheck = true;
+		png.seekg(chunk_data_size, ios::cur);
+	}
+	if (IEND_check) {
+		cout << "IEND was found";
+		z = false;
+		iendcheck = true;
+
+	}
+}
+void pngmethods::pngIHDR() {
+	char IHDR[IHDR_size];
+	png.read((char*)&IHDR, IHDR_size);
+	int chunk_data_size = pngData_amount(IHDR);
+	png.read((char*)&IHDR, IHDR_size);
+	bool ihdr_check = true;
+	for (int i = 0; i < IHDR_size; i++) {
+		if (standartIHDR[i] != IHDR[i]) {
+			ihdr_check = false;
+		}
+	}
+	png.seekg(chunk_data_size + 4, ios::cur);
+	if (ihdr_check) {
+		cout << "IHDR is OK\n";
+	}
+	else {
+		cout << "IHDR is wrong\n";
+		ihdrcheck = true;
+	}
+}
+void pngmethods::pngCRC(){
+	if (z) {
+		char CRC[CRC_size];
+		png.read((char*)&CRC, 4);
+		pngData_amount(CRC);
+		cout << " CRC:";
+		cout << hex << *((int*)CRC) << endl;
+	}
+}
+unsigned pngmethods::pngData_amount(char*arr) {
+	char temp;
+	for (int i = 0; i < 2; i++) {
+		temp = arr[i];	
+		arr[i] = arr[3 - i];
+		arr[3 - i] = temp;
+	}
+	return *((int*)arr);
+}
+void pngmethods::setup() {
+	while (!png.eof()) {
+		pngIDATnIEND();
+		pngCRC();
+	}
+}
+int main() {
+	cout << "Path to file:\n";
+	string str_path;
+	cin >> str_path;
+	pngmethods a(str_path);
+	a.pngSignature();
+	if (a.signcheck) {
+		a.pngIHDR();
+		a.setup();
+		if (!a.ihdrcheck) {
+			if (!a.idatcheck) {
+				cout << "No IDAT\n";
+			}
+		}
+		if (a.idatcheck) {
+			if (!a.iendcheck) {
+				cout << "No IEND\n";
+			}
+		}
+	}
+	if (a.signcheck && !a.ihdrcheck && a.idatcheck && a.iendcheck) {
+		cout << "\nvalid png file";
+	}
+	else {
+		cout << "\ninvalid png file";
+	}
+		_getch();
+}
