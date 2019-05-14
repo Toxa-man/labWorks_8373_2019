@@ -1,0 +1,164 @@
+#include "pch.h"
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+class A 
+{
+	ifstream png;
+	static const int signaturesize = 8, size2 = 4;
+	int signature[signaturesize] = { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
+	int nameofIHDR[size2] = { int('I'),int('H'),int('D'),int('R') };
+	int nameofIDAT[size2] = { int('I'),int('D'),int('A'),int('T') };
+	int nameofIEND[size2] = { int('I'),int('E'),int('N'),int('D') };
+public:
+	A();
+	void signaturecheck();
+	int length(unsigned char*mass);
+	void IHDR();
+	int read_IDAT_IEND();
+	void CRC();
+	bool comparison(unsigned char*mass, int*mass2, int size);
+	void IDAT_IEND_writer();
+	~A();
+};
+A::A() 
+{
+	png.open("normal_file.png", ios::binary);
+}
+void A::signaturecheck()
+{
+	char mass[signaturesize];
+	png.read(mass, signaturesize); 
+	int counter = 0;
+	for (int i=0;i<=7;i++)
+	{
+		if (mass[i] == signature[i])
+		{
+			counter = counter + 1;
+		}
+	}
+	if (counter == 7)
+	{
+		cout << "signature is normal "<< endl;
+	}
+	else
+	{
+		cout << "signature is wrong"<< endl;
+	}
+}
+int A::length(unsigned char*mass)
+{
+	for (int i = 0; i < size2 / 2; ++i)
+	{
+		unsigned char t = mass[i];
+		mass[i] = mass[size2 - 1 - i];
+		mass[size2 - 1 - i] = t;
+	}
+	int*a = (int*)mass;
+	return *a;
+}
+void A::IHDR()
+{
+	unsigned char mass[size2];
+	png.read((char*)&mass, sizeof(mass));
+	int length1 = length(mass);
+	png.read((char*)&mass, sizeof(mass));
+	if (comparison(mass,nameofIHDR, size2))
+	{
+		png.seekg(length1 + size2, ios::cur);
+		cout << "IHDR is normal " << endl;
+	}
+	else 
+	{
+		cout << "IHDR is not found " << endl;
+	}
+}
+bool A::comparison(unsigned char*mass, int*mass2, int size)
+{
+	for (int i = 0; i < size; ++i)
+	{
+		if (mass[i] != mass2[i])
+		{
+			return false;
+		}
+	}
+	return true;
+}
+void A::CRC()
+{
+	unsigned char mas[size2];
+	png.read((char*)&mas, sizeof(mas));
+	for (int i = 0; i < size2; ++i)
+	{
+		cout << "CRC  "<< hex << int(mas[i])<<endl;
+	}
+}
+int A::read_IDAT_IEND()
+{
+	unsigned char mass[size2];
+	int i = png.tellg();
+	png.read((char*)&mass, sizeof(mass));
+	int length1 = length(mass);
+	png.read((char*)&mass, sizeof(mass));
+	if (comparison(mass, nameofIDAT, size2))
+	{
+		png.seekg(length1, ios::cur);
+		cout << "IDAT chunk founded at " << dec << i << endl;
+		cout << "Lenght of chank " << length1 << endl;
+		CRC();
+		cout << endl;
+		return 1;
+	}
+	if (comparison(mass, nameofIEND, size2))
+	{
+		return -1;
+	}
+	if (!png.eof())
+	{
+		png.seekg(length1 + size2, ios::cur);
+		read_IDAT_IEND();
+	}
+	else
+	{
+		return 0;
+	}
+}
+void A::IDAT_IEND_writer()
+{
+	int check = read_IDAT_IEND();
+	if (check == 1)
+	{
+		check = read_IDAT_IEND();
+	}
+	else
+	{
+		cout << "IDAT is not founded " << endl;
+	}
+	while (check == 1)
+	{
+		check = read_IDAT_IEND();
+	}
+	if (check == -1)
+	{
+		cout << "IEND founded " << endl;
+	}
+	else
+	{
+		cout << "IEND  is not founded " << endl;
+	}
+}
+A::~A()
+{
+	png.close();
+}
+int main()
+{
+	A pngfile;
+	pngfile.signaturecheck();
+	pngfile.IHDR();
+	pngfile.IDAT_IEND_writer();
+	system("pause");
+	return 0;
+}
